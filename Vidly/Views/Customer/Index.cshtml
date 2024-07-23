@@ -1,0 +1,35 @@
+﻿@model List<Vidly.Models.Customer>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <h4 class="mt-4 mb-4">Customers</h4>
+    @Html.ActionLink("New Customer", "CustomerForm", "Customer",new { @class = "btn btn-info" })
+    <hr />
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Name</th>
+                <th>Membership Type</th>
+                <th>Discount Rate</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.ActionLink(customer.Name, "Details", "Customer", new { id = customer.ID }, new { @class = "btn btn-link" })
+                    </td>
+                    <td>@customer.MembershipType.Name</td>
+                    <td>@customer.MembershipType.DiscountRate%</td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", "Customer", new { id = customer.ID }, new { @class = "btn btn-warning" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
