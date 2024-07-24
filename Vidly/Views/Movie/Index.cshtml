@@ -4,12 +4,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="container">
-    <h4 class="mt-4 mb-4">Customers</h4>
+    <h4 class="mt-4 mb-4">Movies</h4>
+    @Html.ActionLink("New Movie", "MovieForm", "Movie", new { @class = "btn btn-info" })
+    <hr />
     <table class="table table-bordered table-striped">
         <thead class="thead-dark">
             <tr>
                 <th>Title</th>
                 <th>Genre</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -20,6 +23,9 @@
                         @Html.ActionLink(movie.Title, "Details", "Movie", new { id = movie.Id }, new { @class = "btn btn-link" })
                     </td>
                     <td>@movie.Genre.Name</td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", "Movie", new { id = movie.Id }, new { @class = "btn btn-warning" })
+                    </td>
                 </tr>
             }
         </tbody>

@@ -1,0 +1,50 @@
+﻿@model Vidly.Models.ViewModels.MovieFormViewModel
+@{
+    ViewBag.Title = "MovieForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2>@(Model.IsEditMode? "Edit Movie" : "New Movie")</h2>
+
+    @using (Html.BeginForm("Save", "Movie", FormMethod.Post))
+    {
+        <div class="form-group">
+            @Html.LabelFor(m => m.Movie.Title, new { @class = "form-label" })
+            @Html.TextBoxFor(m => m.Movie.Title, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Movie.Title, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Movie.ReleaseDate, new { @class = "form-label" })
+            @Html.TextBoxFor(m => m.Movie.ReleaseDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "Date" })
+            @Html.ValidationMessageFor(m => m.Movie.ReleaseDate, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Movie.GenreID, new { @class = "form-label" })
+            @Html.DropDownListFor(m => m.Movie.GenreID,
+             new SelectList(Model.Genres, "ID", "Name"),
+             "Select Genre",
+             new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Movie.GenreID, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Movie.NumberOfStock, new { @class = "form-label" })
+            @Html.TextBoxFor(m => m.Movie.NumberOfStock, new { @class = "form-control", value = "0", type = "number" })
+            @Html.ValidationMessageFor(m => m.Movie.NumberOfStock, "", new { @class = "text-danger" })
+        </div>
+
+        <hr />
+
+        @Html.HiddenFor(m => m.Movie.Id)
+        @Html.HiddenFor(m => m.IsEditMode)
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-info">@(Model.IsEditMode? "Edit" : "Add")</button>
+    }
+</div>
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}

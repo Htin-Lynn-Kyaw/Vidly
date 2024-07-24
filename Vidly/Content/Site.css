@@ -18,3 +18,26 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/* Define styles for input-validation-error class */
+.input-validation-error {
+    border: 2px solid #e74c3c; /* Red border to indicate an error */
+    background-color: #f2dede; /* Light red background */
+    color: #a94442; /* Dark red text color */
+    padding: 10px; /* Add some padding */
+    border-radius: 4px; /* Rounded corners */
+    font-weight: bold; /* Bold text */
+}
+
+/* Optionally, you can define styles for error messages */
+.field-validation-error {
+    color: #e74c3c; /* Red color for error messages */
+    font-size: 14px; /* Font size for error messages */
+    margin-top: 5px; /* Space above the error message */
+}
+
+/* Style the input fields when they are focused to improve user experience */
+.input-validation-error:focus {
+    border-color: #c0392b; /* Darker red border when focused */
+    outline: none; /* Remove default outline */
+}

@@ -5,7 +5,7 @@
 }
 
 <div class="container mt-5">
-    <h2>Customer Form</h2>
+    <h2>@(Model.IsEditMode? "Edit Customer" : "New Customer")</h2>
 
     @using (Html.BeginForm("Save", "Customer", FormMethod.Post))
     {
@@ -17,7 +17,7 @@
 
         <div class="form-group">
             @Html.LabelFor(m => m.Customer.BirthDate, new { @class = "form-label" })
-            @Html.TextBoxFor(m => m.Customer.BirthDate, "{0:yyyy-MM-dd}", new { @class = "form-control"})
+            @Html.TextBoxFor(m => m.Customer.BirthDate, "{0:yyyy-MM-dd}", new { @class = "form-control" , type = "date"})
             @Html.ValidationMessageFor(m => m.Customer.BirthDate, "", new { @class = "text-danger" })
         </div>
 
@@ -26,8 +26,8 @@
             @Html.DropDownListFor(m => m.Customer.MembershipTypeID,
                     new SelectList(Model.MembershipTypes, "ID", "Name"),
                     "Select Membership Type",
-                    new { @class = "form-control", type = "date" })
-            @Html.ValidationMessageFor(m => m.Customer.BirthDate, "", new { @class = "text-danger" })
+                    new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Customer.MembershipTypeID, "", new { @class = "text-danger" })
         </div>
 
         <div class="checkbox mt-3">
@@ -37,8 +37,14 @@
         </div>
         <hr />
 
-        @Html.HiddenFor(m => m.Customer.ID)
-        <button type="submit" class="btn btn-info">Save</button>
+        @Html.HiddenFor(m => m.Customer.Id)
+        @Html.HiddenFor(m => m.IsEditMode)
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-info">@(Model.IsEditMode? "Edit" : "Add")</button>
     }
 </div>
 
+@section scripts
+{
+   @Scripts.Render("~/bundles/jqueryval") 
+}

@@ -5,10 +5,10 @@ using System.Web;
 
 namespace Vidly.Models.ViewModels
 {
-    public class CustomerFormViewModel
+    public class MovieFormViewModel
     {
-        public IEnumerable<MembershipType> MembershipTypes { get; set; }
-        public Customer Customer { get; set; }
+        public Movie Movie { get; set; }
+        public List<Genre> Genres { get; set; }
         public bool IsEditMode { get; set; }
     }
 }

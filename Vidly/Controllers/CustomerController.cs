@@ -33,22 +33,42 @@ namespace Vidly.Controllers
             var membershipTypes = await _context.MembershipTypes.ToListAsync();
             CustomerFormViewModel viewModel = new CustomerFormViewModel()
             {
-                MembershipTypes = membershipTypes
+                MembershipTypes = membershipTypes,
+                IsEditMode = false,
+                Customer = new Customer()
             };
 
             return View(viewModel);
         }
 
         [HttpPost]
-        public ActionResult Save(Customer customer)
+        [ValidateAntiForgeryToken]
+        public ActionResult Save(CustomerFormViewModel viewModel)
         {
-            if(customer.ID == 0)
+            if (!ModelState.IsValid)
+            {
+                var a = "";
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                       a = $"Property: {state.Key}, Error: {error.ErrorMessage}";
+                    }
+                }
+                a = a + "";
+                viewModel.MembershipTypes = _context.MembershipTypes.ToList();
+                return View("CustomerForm", viewModel);
+            }
+
+            var customer = viewModel.Customer;
+
+            if(customer.Id == 0)
             {
                 _context.Customers.Add(customer);
             }
             else
             {
-                var customerInDb = _context.Customers.Single(x => x.ID == customer.ID);
+                var customerInDb = _context.Customers.Single(x => x.Id == customer.Id);
                 customerInDb.Name = customer.Name;
                 customerInDb.IsSubscribed = customer.IsSubscribed;
                 customerInDb.BirthDate = customer.BirthDate;
@@ -70,7 +90,7 @@ namespace Vidly.Controllers
 
         public async Task<ActionResult> Details(int? id)
         {
-            var customer = await _context.Customers.Include(c => c.MembershipType).SingleOrDefaultAsync(x => x.ID == id);
+            var customer = await _context.Customers.Include(c => c.MembershipType).SingleOrDefaultAsync(x => x.Id == id);
             if (customer == null)
                 return HttpNotFound();
             return View(customer);
@@ -78,14 +98,15 @@ namespace Vidly.Controllers
 
         public async Task<ActionResult> Edit(int id)
         {
-            var customer = await _context.Customers.Include(c => c.MembershipType).SingleOrDefaultAsync(x => x.ID == id);
+            var customer = await _context.Customers.Include(c => c.MembershipType).SingleOrDefaultAsync(x => x.Id == id);
             if (customer == null)
                 return HttpNotFound();
 
             var viewModel = new CustomerFormViewModel
             {
                 Customer = customer,
-                MembershipTypes = _context.MembershipTypes.ToList()
+                MembershipTypes = _context.MembershipTypes.ToList(),
+                IsEditMode = true
             };
 
             return View("CustomerForm", viewModel);
