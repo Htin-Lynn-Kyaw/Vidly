@@ -20,7 +20,8 @@ textarea {
 }
 
 /* Define styles for input-validation-error class */
-.input-validation-error {
+.input-validation-error,
+input.error {
     border: 2px solid #e74c3c; /* Red border to indicate an error */
     background-color: #f2dede; /* Light red background */
     color: #a94442; /* Dark red text color */
@@ -30,7 +31,8 @@ textarea {
 }
 
 /* Optionally, you can define styles for error messages */
-.field-validation-error {
+.field-validation-error,
+label.error {
     color: #e74c3c; /* Red color for error messages */
     font-size: 14px; /* Font size for error messages */
     margin-top: 5px; /* Space above the error message */

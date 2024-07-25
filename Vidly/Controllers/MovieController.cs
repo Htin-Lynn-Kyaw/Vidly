@@ -10,6 +10,7 @@ using Vidly.Models.ViewModels;
 
 namespace Vidly.Controllers
 {
+    [Authorize(Roles = SystemRoles.ADMIN)]
     public class MovieController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,12 +24,17 @@ namespace Vidly.Controllers
             _context.Dispose();
         }
         // GET: Movie
+        [AllowAnonymous]
         public async Task<ViewResult> Index()
         {
             var movies = await _context.Movies.Include(m => m.Genre).ToListAsync();
+            //if (User.IsInRole(SystemRoles.ADMIN)) 
             return View(movies);
+            
+            //return View("ReadOnlyIndex", movies);  
         }
 
+        [AllowAnonymous]
         public async Task<ViewResult> Details(int id)
         {
             var movie = await _context.Movies.Include(m => m.Genre).SingleOrDefaultAsync(x => x.Id == id);
@@ -93,6 +99,18 @@ namespace Vidly.Controllers
             };
 
             return View("MovieForm", viewModel);
+        }
+
+        public async Task<ActionResult> Delete(int id)
+        {
+            var movie = await _context.Movies.SingleOrDefaultAsync(x => x.Id == id);
+            if (movie == null)
+                return HttpNotFound();
+
+            _context.Movies.Remove(movie);
+            _context.SaveChanges();
+
+            return View("Index");
         }
     }
 }

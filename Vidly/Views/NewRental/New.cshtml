@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewBag.Title = "New Rental Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>New Rental Form</h2>
+
+<form id="newRental">
+    <div class="form-group">
+        <label for="customerName">Customer Name</label>
+        <div class="tt-container">
+            <input type="text" class="form-control" data-rule-validCustomer="true" id="customerName" name="customerName" placeholder="Enter customer name" required>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="movieTitle">Movie Title</label>
+        <div class="tt-container">
+            <input type="text" class="form-control" data-rule-validMovies="true" id="movieTitle" name="movieTitle" placeholder="Enter movie title">
+        </div>
+    </div>
+    <div class="row mt-3">  
+        <div class="col-md-2 col-sm-4">
+            <ul id="moviesList" class="list-group small"></ul>
+        </div>
+    </div>
+    <hr />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+@section scripts
+    {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            let vm = {
+                moviesId : []
+            };
+            let customers = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                //prefetch: '../data/films/post_1960.json',
+                remote: {
+                    url: '/api/customer?query=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+
+            $('#customerName').typeahead({
+                minLength: 2,
+                highlight: true
+            }, {
+                name: 'customer',
+                display: 'name',
+                source: customers
+            }).on("typeahead:select", function (e, customer) {
+                vm.customerId = customer.id;
+            });
+
+            let movies = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                //prefetch: '../data/films/post_1960.json',
+                remote: {
+                    url: '/api/movie?query=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+
+            $('#movieTitle').typeahead({
+                minLength: 2,
+                highlight: true
+            }, {
+                name: 'movie',
+                display: 'title',
+                source: movies
+            }).on("typeahead:select", function (e, movie) {
+                $("#moviesList").append("<li class = 'list-group-item'>" + movie.title + "</li>");
+                $("#movieTitle").typeahead("val", "");
+                vm.moviesId.push(movie.id);
+            });
+
+            $.validator.addMethod("validCustomer", function () {
+                return vm.customerId && vm.customerId !== 0;
+            }, "Please select a valid customer!");
+
+            $.validator.addMethod("validMovies", function () {
+                return vm.moviesId.length > 0;
+            }, "Please select at least one movie!");
+
+            let validator = $("#newRental").validate({
+                submitHandler: function () {
+                    $.ajax({
+                        url: "/api/NewRental",
+                        method: "post",
+                        data: vm
+                    })
+                    .done(function () {
+                        toastr.success("Rentals successfully recorded.");
+                        $("#customerName").typeahead("val", "");
+                        $("#movieTitle").typeahead("val", "");
+                        $("#moviesList").empty();
+
+                        vm = { moviesId: [] };
+                        validator.resetForm();
+
+                    })
+                    .fail(function () {
+                        toastr.fail("Something unexpected happened.");
+                    });
+                    return false;
+                }
+            });
+        });
+    </script>
+    }

@@ -46,6 +46,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.1.1\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json.Bson, Version=1.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.Bson.1.0.2\lib\net45\Newtonsoft.Json.Bson.dll</HintPath>
@@ -194,15 +197,19 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\MappingProfile.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\API\CustomerController.cs" />
+    <Compile Include="Controllers\API\MovieController.cs" />
+    <Compile Include="Controllers\API\NewRentalController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MovieController.cs" />
+    <Compile Include="Controllers\NewRentalController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -250,15 +257,48 @@
     <Compile Include="Migrations\202407240833164_AddValidations.Designer.cs">
       <DependentUpon>202407240833164_AddValidations.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202407251111333_SeedUserAndRoles.cs" />
+    <Compile Include="Migrations\202407251111333_SeedUserAndRoles.Designer.cs">
+      <DependentUpon>202407251111333_SeedUserAndRoles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202407251231350_AddDrivingLicense.cs" />
+    <Compile Include="Migrations\202407251231350_AddDrivingLicense.Designer.cs">
+      <DependentUpon>202407251231350_AddDrivingLicense.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202407251359179_AddPhoneOnRegister.cs" />
+    <Compile Include="Migrations\202407251359179_AddPhoneOnRegister.Designer.cs">
+      <DependentUpon>202407251359179_AddPhoneOnRegister.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202407251524121_AddRentalDomain.cs" />
+    <Compile Include="Migrations\202407251524121_AddRentalDomain.Designer.cs">
+      <DependentUpon>202407251524121_AddRentalDomain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202407251543395_AddAvaliableStockInMovie.cs" />
+    <Compile Include="Migrations\202407251543395_AddAvaliableStockInMovie.Designer.cs">
+      <DependentUpon>202407251543395_AddAvaliableStockInMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202407251827546_AlterRental.cs" />
+    <Compile Include="Migrations\202407251827546_AlterRental.Designer.cs">
+      <DependentUpon>202407251827546_AlterRental.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202407251838437_DebuggRental.cs" />
+    <Compile Include="Migrations\202407251838437_DebuggRental.Designer.cs">
+      <DependentUpon>202407251838437_DebuggRental.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Dtos\CustomerDto.cs" />
+    <Compile Include="Models\Dtos\MovieDto.cs" />
+    <Compile Include="Models\Dtos\RentalDto.cs" />
     <Compile Include="Models\Genre.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MembershipType.cs" />
     <Compile Include="Models\Min18YearsMember.cs" />
     <Compile Include="Models\Movie.cs" />
+    <Compile Include="Models\Rental.cs" />
+    <Compile Include="Models\SystemRoles.cs" />
     <Compile Include="Models\ViewModels\CustomerFormViewModel.cs" />
     <Compile Include="Models\ViewModels\MovieFormViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -281,15 +321,22 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\toastr.css" />
+    <Content Include="Content\toastr.min.css" />
+    <Content Include="Content\typeahead.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\bloodhound.js" />
+    <Content Include="Scripts\bloodhound.min.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\toastr.scss" />
+    <Content Include="Content\toastr.less" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -301,6 +348,12 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\toastr.js" />
+    <Content Include="Scripts\toastr.min.js" />
+    <Content Include="Scripts\typeahead.bundle.js" />
+    <Content Include="Scripts\typeahead.bundle.min.js" />
+    <Content Include="Scripts\typeahead.jquery.js" />
+    <Content Include="Scripts\typeahead.jquery.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -341,6 +394,7 @@
     <Content Include="Views\Movie\Details.cshtml" />
     <Content Include="Views\Customer\CustomerForm.cshtml" />
     <Content Include="Views\Movie\MovieForm.cshtml" />
+    <Content Include="Views\NewRental\New.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -405,6 +459,27 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202407240833164_AddValidations.resx">
       <DependentUpon>202407240833164_AddValidations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202407251111333_SeedUserAndRoles.resx">
+      <DependentUpon>202407251111333_SeedUserAndRoles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202407251231350_AddDrivingLicense.resx">
+      <DependentUpon>202407251231350_AddDrivingLicense.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202407251359179_AddPhoneOnRegister.resx">
+      <DependentUpon>202407251359179_AddPhoneOnRegister.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202407251524121_AddRentalDomain.resx">
+      <DependentUpon>202407251524121_AddRentalDomain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202407251543395_AddAvaliableStockInMovie.resx">
+      <DependentUpon>202407251543395_AddAvaliableStockInMovie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202407251827546_AlterRental.resx">
+      <DependentUpon>202407251827546_AlterRental.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202407251838437_DebuggRental.resx">
+      <DependentUpon>202407251838437_DebuggRental.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

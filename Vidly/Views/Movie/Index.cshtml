@@ -2,10 +2,14 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    bool IsAuthorized = User.IsInRole(Vidly.Models.SystemRoles.ADMIN);
 }
 <div class="container">
     <h4 class="mt-4 mb-4">Movies</h4>
-    @Html.ActionLink("New Movie", "MovieForm", "Movie", new { @class = "btn btn-info" })
+    @if (IsAuthorized)
+    {
+        @Html.ActionLink("New Movie", "MovieForm", "Movie", new { @class = "btn btn-info" })
+    }
     <hr />
     <table class="table table-bordered table-striped">
         <thead class="thead-dark">
@@ -24,7 +28,13 @@
                     </td>
                     <td>@movie.Genre.Name</td>
                     <td>
-                        @Html.ActionLink("Edit", "Edit", "Movie", new { id = movie.Id }, new { @class = "btn btn-warning" })
+                        @if (IsAuthorized)
+                        {
+
+                            @Html.ActionLink("Edit", "Edit", "Movie", new { id = movie.Id }, new { @class = "btn btn-warning" })
+                            <text>|</text>
+                            @Html.ActionLink("Delete", "Delete", "Movie", new { id = movie.Id }, new { @class = "btn btn-danger" })
+                        }
                     </td>
                 </tr>
             }
